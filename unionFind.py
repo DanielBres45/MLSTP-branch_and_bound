@@ -11,11 +11,12 @@ import matplotlib.pyplot as plt
 
 class union_find:
     
-    def __init__(self):
+    def __init__(self, G):
         
         self.data = {}
         self.index = {}
         self.key_counter = 0
+        self.G = G
         
     def __str__(self):
         ret_str = "{}".format(self.data)
@@ -95,13 +96,21 @@ class union_find:
         key1 = self.getKey(item1)
         key2 = self.getKey(item2)
         
+        comb_edge = None
+        
+        for node in self.data[key2][0]:
+            for node_inner in self.data[key1][0]:
+                if self.G.has_edge(node, node_inner) or self.G.has_edge(node, node_inner):
+                    comb_edge = (node, node_inner)
         
         self.data[key1][0] = nx.compose(self.data[key2][0], self.data[key1][0])
         
-        if not (root1 and root2):
-            self.data[key1][0].add_edge(self.data[key1][1], self.data[key2][1])
-        else:
-            self.data[key1][0].add_edge(root1, root2)
+        self.data[key1][0].add_edge(comb_edge[0], comb_edge[1])
+        
+        # if not (root1 and root2):
+        #     self.data[key1][0].add_edge(self.data[key1][1], self.data[key2][1])
+        # else:
+        #     self.data[key1][0].add_edge(root1, root2)
         
         # print("Merging tree with {} and {}".format(item1, item2))
         # nx.draw_networkx(self.data[key1][0])
